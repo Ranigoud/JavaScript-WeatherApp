@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather app</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: green;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Container Styling */
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Title Styling */
+        .title p {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Input Section Styling */
+        .input {
+            margin-bottom: 20px;
+        }
+
+        .input input[type="text"] {
+            width: 200px;
+            padding: 10px;
+            font-size: 14px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            outline: none;
+        }
+
+        .input input[type="text"]:focus {
+            border-color: #66ccff;
+        }
+
+        .input input[type="button"] {
+            background-color: #66ccff;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input input[type="button"]:hover {
+            background-color: #5bb8e1;
+        }
+
+        /* Info Section Styling */
+        .info {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .info img {
+            width: 80px;
+            height: 70px;
+            margin-bottom: 10px;
+        }
+
+        .temp {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        #unit {
+            font-size: 24px;
+            vertical-align: top;
+        }
+
+        #weather.des {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        #location {
+            font-size: 16px;
+            color: #777;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <p>Weather App</p>
+        </div>
+        <div class="input">
+            <input type="text" id="location-input" placeholder="Enter location">
+            <input type="button" value="Get" id="btn">
+        </div>
+        <div class="info">
+            <img src="images/cloud.png" id="icon" alt="img">
+            <div class="temp">
+                <span id="temp-value">25</span>
+                <span id="unit">&#176</span>
+                <span id="c">C</span>
+            </div>
+            <div id="weather-des">Cloudy</div>
+            <div id="location">Hyderabad</div>
+        </div>
+    </div>
+
+    <script>
+        let inputEle = document.getElementById("location-input");
+        let tempEle = document.getElementById("temp-value");
+        let locEle = document.getElementById("location");
+        let weatherdesEle = document.getElementById("weather-des");
+        let btnEle = document.getElementById("btn");
+        let icon = document.getElementById("icon");
+
+        const apiKey = "62abf62ba88a0b3f0eafed5917fbeb65";//openweatherapi.org website lo account okk key
+
+        btnEle.onclick = function () {
+            if (inputEle.value === "") {//empty unte
+                alert("Please enter a location");
+            } else {
+                const loc = inputEle.value;
+                const url = `https://api.openweathermap.org/data/2.5/weather?q=${loc}&appid=${apiKey}`;//templetate strigweather api website lo current api okka url build city name
+
+                fetch(url)//in fetch api lo promise two object return
+                    .then(res => res.json())//vachina result ni json method lo convart cheyali apudu json method okk object
+                    .then(data => {//return chestundi
+                        console.log(data);
+                        const { name } = data;//vachina data ni destructuresing cheyali
+                        const { feels_like } = data.main;
+                        const { description } = data.weather[0];
+
+                        tempEle.innerText = Math.floor(feels_like - 273); // Convert Kelvin to Celsius so -273
+                        locEle.innerText = name;//input value city name
+                        weatherdesEle.innerText = description;//weather result
+                    })
+    //             .catch(err => {
+    //                console.log(err);  //  error console 
+    //             alert("Enter valid location");
+    //              });
+                    .catch(() => {
+                        alert("Enter a valid location");
+                    });
+
+                inputEle.value = ""; // Clear input field
+            }
+        };
+    </script>
+</body>
+</html>
+
